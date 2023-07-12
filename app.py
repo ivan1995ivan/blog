@@ -35,6 +35,12 @@ def posts():
     return render_template('posts.html', articles=articles)
 
 
+@app.route('/posts/<int:id>')
+def post_detail(id):
+    article = Article.query.get(id)
+    return render_template('posts_detail.html', articles=articles)
+
+
 @app.route('/create-article', methods=['POST', 'GET'])
 def create_article():
     if request.method == 'POST':
