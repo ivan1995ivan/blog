@@ -41,6 +41,37 @@ def post_detail(id):
     return render_template('post_detail.html', article=article)
 
 
+@app.route('/posts/<int:id>/del')
+def post_delete(id):
+    article = Article.query.get_or_404(id)
+    try:
+        db.session.delete(article)
+        db.session.commit()
+        return redirect('/posts')
+
+    except:
+        return 'При удалении статьи возникла ошибка'
+
+
+@app.route('/posts/<int:id>/update', methods=['POST', 'GET'])
+def create_update():
+    if request.method == 'POST':
+        title = request.form['title']
+        intro = request.form['intro']
+        text = request.form['text']
+
+        article = Article(title=title, intro=intro, text=text)
+
+        try:
+            db.session.add(article)
+            db.session.commit()
+            return redirect('/posts')
+        except:
+            return 'При добавлении статьи произошла ошибка'
+    else:
+        return render_template('create-article.html')
+
+
 @app.route('/create-article', methods=['POST', 'GET'])
 def create_article():
     if request.method == 'POST':
@@ -53,7 +84,7 @@ def create_article():
         try:
             db.session.add(article)
             db.session.commit()
-            return redirect('/')
+            return redirect('/posts')
         except:
             return 'При добавлении статьи произошла ошибка'
     else:
